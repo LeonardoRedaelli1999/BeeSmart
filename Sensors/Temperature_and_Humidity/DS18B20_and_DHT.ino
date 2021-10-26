@@ -13,6 +13,7 @@
 // Humidity sensor DHT INSIDE (pin 3) and OUTSIDE (pin 4) the beehive
 #define DHT_IN_PIN 3
 #define DHT_OUT_PIN 4
+#define LEDpin 13
 
 // Setup a oneWire instance to communicate with any OneWire device
 OneWire oneWire(ONE_WIRE_BUS);
@@ -46,6 +47,13 @@ void setup(void)
   sensors.begin();
   dht.begin();
   Serial.begin(9600);
+  
+  // Check visually for the power light (spia di accensione)
+  pinMode(LEDpin, OUTPUT);
+  digitalWrite(LEDpin,HIGH);
+  delay(5000);
+  digitalWrite(LEDpin, LOW);
+
   
 }
 
