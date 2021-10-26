@@ -6,6 +6,8 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
+ISR(WDT_vect) { Sleepy::watchdogEvent(); }
+
 // Sensor type for the humidity sensor
 #define DHTTYPE DHT11   // DHT 11
 // Data wire bus for DS18B20 in digital pin 2
@@ -62,14 +64,25 @@ void loop(void)
   // Send command to all DS18B20 for temperature conversion
   sensors.requestTemperatures();
   
-  // Get temperature from each sensor and display it in order to test/debug
+  // Get temperature from a specified sensor (position of sensors is physically written on the sensor), in order to keep track for the physical position of sensors
+  tempC[0] = sensors.getTempC(address_T1);
+  //delay(200);
+  tempC[1] = sensors.getTempC(address_T2);
+  //delay(200);
+  tempC[2]= sensors.getTempC(address_T3);
+  //delay(200);
+  tempC[3] = sensors.getTempC(address_T4);
+  //delay(200);
+  tempC[4] = sensors.getTempC(address_T5);
+  //delay(200);
+  
+  // Display the temperature values in order to test/debug
   for (int i = 0;  i < numDS18B20;  i++)
   {
-    Serial.print("Sensor ");
+    Serial.print("Sensor T");
     Serial.print(i+1);
     Serial.print(" : ");
     //RICONOSCIMENTO SENSORE
-    tempC[i] = sensors.getTempCByIndex(i);
     Serial.print(tempC[i]);
     Serial.print("C ");
   }
