@@ -25,7 +25,7 @@ const int numDS18B20 = 5;
 const int numDHT = 2;
 float tempC[numDS18B20]; //12 significant bits
 
-// Addresses of DS18B20 sensors retrived with the Sensor_Identifier.ino program. This procedure can be AUTOMATIZED for a large scale production 
+// Addresses of DS18B20 sensors retrived with the Sensor_Identifier_DS18B20.ino program. This procedure can be AUTOMATIZED for a large scale production 
 DeviceAddress address_T1 = {0x28, 0x96, 0x25, 0x46, 0x5F, 0x20, 0x01, 0x65}; // T1=CLUSTER of bees
 DeviceAddress address_T2 = {0x28, 0x3E, 0xA8, 0x93, 0x63, 0x20, 0x01, 0x5A}; // T2=LEFT or EST STOCKS
 DeviceAddress address_T3 = {0x28, 0xE2, 0x8A, 0x7A, 0x62, 0x20, 0x01, 0xE9}; // T3=RIGHT or OVEST STOCKS
