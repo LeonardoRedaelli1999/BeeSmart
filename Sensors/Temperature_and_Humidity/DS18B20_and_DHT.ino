@@ -58,6 +58,10 @@ void setup(void)
   digitalWrite(LEDpin,HIGH);
   delay(5000);
   digitalWrite(LEDpin, LOW);
+  
+  // BRUTTO We saves datas on a MicroSD so we could send them via LoRa only once a day
+  // However if the battery ended or for every inconvenient crash we should send all the datas that probably wasn't able to send
+  
 }
 
 void loop(void)
