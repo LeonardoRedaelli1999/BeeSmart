@@ -50,7 +50,8 @@ void setup(void)
 {
   // Start up the library for DS18B20 and for DHT
   sensors.begin();
-  dht.begin();
+  dht_in.begin();
+  dht_out.begin();
   Serial.begin(9600);
   
   // Check visually for the power light (spia di accensione)
