@@ -5,6 +5,10 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
+// Libraries for comunicating with the SD
+#include <SPI.h>
+#include <SD.h>
+File myFile;
 
 // Initialize the commands for SLEEP to save energy
 //ISR(WDT_vect) { Sleepy::watchdogEvent(); }
@@ -57,12 +61,15 @@ void setup(void)
   // Check visually for the power light (spia di accensione)
   pinMode(LEDpin, OUTPUT);
   digitalWrite(LEDpin,HIGH);
-  delay(5000);
+  delay(2000);
+  if (!SD.begin(10)) {
+    // If SD initialization didn't go as planned the light stay on
+    while (1);
+  }
   digitalWrite(LEDpin, LOW);
   
   // BRUTTO We saves datas on a MicroSD so we could send them via LoRa only once a day
   // However if the battery ended or for every inconvenient crash we should send all the datas that probably wasn't able to send
-  
 }
 
 void loop(void)
@@ -128,4 +135,23 @@ void loop(void)
     Serial.println(F("%"));
   }
     
+  // FILE_WRITE starts from the end of the file to read/save datas
+  // BRUTTO Save in this order: the 5 temperature, the 2 humidity and the percentual of activation of the PIR
+  myFile = SD.open("test.txt", FILE_WRITE);
+  
+  // myFile = TRUE if it has been opened correctly
+  if (myFile) {
+    for (int i = 0; i < numTemp; i++) {
+    myFile.println(tempC[i]);
+    }
+    for (int i = 0; i < numDHT; i++) {
+    myFile.println(humidity[i]);
+    }
+    //myFile.println(percPIR);
+    
+  myFile.close();
+  }
+  
+  
+  delay(10000);
 }
