@@ -152,7 +152,7 @@ void loop(void)
   myFile.close();
   }
   
-  //IF you want to read the file directly, the following code should be used:
+  //IF you want to read the file directly, the following code should be considered (e.g. for testing, not to analyse data):
   //it contains the labels for each value that is written in the text
 
   /*
