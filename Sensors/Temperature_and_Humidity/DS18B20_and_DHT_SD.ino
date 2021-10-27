@@ -141,7 +141,7 @@ void loop(void)
   
   // myFile = TRUE if it has been opened correctly
   if (myFile) {
-    for (int i = 0; i < numTemp; i++) {
+    for (int i = 0; i < numDS18B20; i++) {
     myFile.println(tempC[i]);
     }
     for (int i = 0; i < numDHT; i++) {
