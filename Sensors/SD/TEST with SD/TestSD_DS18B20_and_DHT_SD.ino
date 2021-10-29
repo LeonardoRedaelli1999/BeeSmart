@@ -110,7 +110,7 @@ void loop(void)
   if (isnan(event.relative_humidity)) {
     // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
     Serial.println(F("Error reading humidity IN!"));
-    // BRUTTO TRY FOR SOME TIME AND IF IT DOESN'T RESPOND THAN ALWAYS RETURN AN ERROR VALUE AND CALL IT NO MORE
+    humidity[0]=-126.0;  //if the humidity sensor 0 is not a number (e.g. disconnectes, etc..) its value becomes -126.0 that is a flag value
   }
   // Display the humidity values in order to test/debug
   else {
@@ -125,7 +125,7 @@ void loop(void)
   if (isnan(event.relative_humidity)) {
     // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
     Serial.println(F("Error reading humidity OUT!"));
-    // BRUTTO TRY FOR SOME TIME AND IF IT DOESN'T RESPOND THAN ALWAYS RETURN AN ERROR VALUE AND CALL IT NO MORE
+    humidity[1]=-126.0;  //if the humidity sensor 1 is not a number (e.g. disconnectes, etc..) its value becomes -126.0 that is a flag value
   }
   // Display the humidity values in order to test/debug
   else {
