@@ -17,3 +17,6 @@ Weight of the beehive
 
 LoRa
 transmits the data to a second arduino
+
+Data Analysis
+Code to analyse data with Matlab
