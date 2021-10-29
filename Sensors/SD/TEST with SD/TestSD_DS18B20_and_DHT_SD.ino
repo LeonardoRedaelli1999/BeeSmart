@@ -1,3 +1,5 @@
+//INSERT SLEEP MODE
+
 // Libraries for DS18B20
 #include <OneWire.h>
 #include <DallasTemperature.h>
