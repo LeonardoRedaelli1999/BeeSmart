@@ -1,4 +1,5 @@
-The aim of this project is to delvelop a device with ARDUINO able to measure different quantities to keep control of a beehive and to transmit the data with LoRa module to another arduino (the idea is to transmit them to home and analyse them to know the status of the beehive).
+The aim of this project is to delvelop a device with ARDUINO able to measure different quantities to keep control of a beehive and to transmit the data with 
+LoRa module to another arduino (the idea is to transmit them to home and analyse them to know the status of the beehive).
 We measured the following parameters of the beehive:
 TEMPERATURE:
 T1=CLUSTER of bees
