@@ -1,5 +1,6 @@
 #include <SPI.h>
-//This code is the same as the one in 'Generico code for SD', we copied the code here just to make it easy for the reader to understand
+// This code is the same as the code named 'SD_Reading_Files.ino' in 'Generico code for SD', 
+// we copied the code here just to make it easy for the reader to understand
 
 #include <SD.h>
 File myFile;
