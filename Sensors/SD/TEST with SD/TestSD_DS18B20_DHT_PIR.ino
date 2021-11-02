@@ -19,8 +19,8 @@ File myFile;
 #define ONE_WIRE_BUS 2
 // Humidity sensor DHT INSIDE (pin 3) and OUTSIDE (pin 4) the beehive
 #define DHT_IN_PIN 3
-#define DHT_OUT_PIN 4
-#define PIR_PIN 5;
+//#define DHT_OUT_PIN 4
+#define PIR_PIN 5
 #define LEDpin 13
 
 // Setup a oneWire instance to communicate with any OneWire device
@@ -29,9 +29,8 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 
-// Number of temperature/humidity sensors PREDEFINED
+// Number of TEMPERATURE sensors PREDEFINED
 const int numDS18B20 = 5;
-const int numDHT = 2;
 
 // BRUTTO float numbers require 2byte, we could save the measurements instantly as integer types (int=measurement*100)
 float tempC[numDS18B20]; //12 significant bits
@@ -43,17 +42,17 @@ DeviceAddress address_T3 = {0x28, 0xE2, 0x8A, 0x7A, 0x62, 0x20, 0x01, 0xE9}; // 
 DeviceAddress address_T4 = {0x28, 0x65, 0x7B, 0x5C, 0x5F, 0x20, 0x01, 0x5A}; // T4=CLUSTER of bees (safety)
 DeviceAddress address_T5 = {0x28, 0x49, 0x7C, 0x51, 0x5F, 0x20, 0x01, 0x5D}; // T5=OUTSIDE
 
+
+// Number of HUMIDITY sensors PREDEFINED
+//const int numDHT = 2;
+
 //float temperature[numDHT]; // Temperature measured from the DHT, not needed since we used sensors T1 T2 T3 T4 T5
-float humidity[numDHT];
+//float humidity[numDHT];
+float humidity;
 
 // Initialize the DHT sensors INSIDE and OUTSIDE the beehive
 DHT_Unified dht_in(DHT_IN_PIN, DHTTYPE);
-DHT_Unified dht_out(DHT_OUT_PIN, DHTTYPE);
-
-
-int pirState = LOW;             // we start, assuming no motion detected
-int val = 0;
-long count=0;
+//DHT_Unified dht_out(DHT_OUT_PIN, DHTTYPE);
 
 
 void setup(void)
@@ -62,11 +61,12 @@ void setup(void)
   sensors.begin();
   dht_in.begin();
   dht_out.begin();
+  pinMode(PIR_PIN, INPUT);
   Serial.begin(9600);
   
   // Check visually for the power light (spia di accensione)
   pinMode(LEDpin, OUTPUT);
-  digitalWrite(LEDpin,HIGH);
+  digitalWrite(LEDpin, HIGH);
   delay(3000);
   if (!SD.begin(10)) {
     // If SD initialization didn't go as planned the light stay on
@@ -74,12 +74,20 @@ void setup(void)
   }
   digitalWrite(LEDpin, LOW);
   
-  // BRUTTO We saves datas on a MicroSD so we could send them via LoRa only once a day
+  // BRUTTO We saves datas on a MicroSD so we could send them via LoRa only once a day (Solar Panel, so when light is max)
   // However if the battery ended or for every inconvenient crash we should send all the datas that probably wasn't able to send
 }
 
 void loop(void)
 { 
+  
+  // PIR sensor state and counts
+  int PIRstate = LOW; // Start assuming no motion detected
+  int PIRread = 0;
+  int count = 0;
+  int max = 0; // PIR measurements are made roughly each 10s for roughly 5 minutes (10s*30=300s)
+  // Sensor PIR is calibrated with the Sensor_PIR_Calibrate.ino program to stay in alarm for roughly 9.5s
+  
   // Send command to all DS18B20 for temperature conversion
   sensors.requestTemperatures();
   
@@ -88,7 +96,7 @@ void loop(void)
   //delay(200);
   tempC[1] = sensors.getTempC(address_T2);
   //delay(200);
-  tempC[2]= sensors.getTempC(address_T3);
+  tempC[2] = sensors.getTempC(address_T3);
   //delay(200);
   tempC[3] = sensors.getTempC(address_T4);
   //delay(200);
@@ -120,6 +128,22 @@ void loop(void)
   }
   // Display the humidity values in order to test/debug
   else {
+    humidity=event.relative_humidity;
+    Serial.print(F("Humidity in: "));
+    Serial.print(humidity);
+    Serial.println(F("%"));
+  }
+  
+  /*
+  // Get humidity and print its value
+  dht_in.humidity().getEvent(&event);
+  if (isnan(event.relative_humidity)) {
+    // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
+    Serial.println(F("Error reading humidity IN!"));
+    // BRUTTO TRY FOR SOME TIME AND IF IT DOESN'T RESPOND THAN ALWAYS RETURN AN ERROR VALUE AND CALL IT NO MORE
+  }
+  // Display the humidity values in order to test/debug
+  else {
     humidity[0]=event.relative_humidity;
     Serial.print(F("Humidity in: "));
     Serial.print(humidity[0]);
@@ -140,9 +164,34 @@ void loop(void)
     Serial.print(humidity[1]);
     Serial.println(F("%"));
   }
+  */
+  
+  // BRUTTO it could be used as in the examples of PIR, which implies a better accuracy by interrupting the cycle using an external CLOCK
+  // BRUTTO The external CLOCK could also be used to WAKE UP arduino from sleep
+  // Get percentual time of activation of PIR
+  while (max<30){
+    PIRread = digitalRead(PIR_PIN);  // read PIR value
+    if (PIRread == HIGH) {
+      if (PIRstate == LOW) {
+        Serial.println("Motion detected!");
+        count=count+1;
+        Serial.print("Number of activations:");
+        Serial.println(count);
+        PIRstate = HIGH;
+      }
+    } else {
+      if (PIRstate == HIGH){
+        Serial.println("Motion ended!");
+        PIRstate = LOW;
+      }
+    }
+    delay(10000);
+    max=max+1;
+  }
+
     
   // FILE_WRITE starts from the end of the file to read/save datas
-  // BRUTTO Save in this order: the 5 temperature, the 2 humidity and the percentual of activation of the PIR
+  // BRUTTO Save in this order: the 5 temperature, the humidity and the percentual of activation of the PIR
   myFile = SD.open("test.txt", FILE_WRITE);
   
   // myFile = TRUE if it has been opened correctly
@@ -150,10 +199,11 @@ void loop(void)
     for (int i = 0; i < numDS18B20; i++) {
     myFile.println(tempC[i]);
     }
-    for (int i = 0; i < numDHT; i++) {
-    myFile.println(humidity[i]);
-    }
-    //myFile.println(percPIR);
+    //for (int i = 0; i < numDHT; i++) {
+    //myFile.println(humidity[i]);
+    //}
+    myFile.println(humidity);
+    myFile.println(count/30.0); // Verificare torni un float
     
   myFile.close();
   }
