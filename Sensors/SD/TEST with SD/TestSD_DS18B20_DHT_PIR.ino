@@ -124,7 +124,7 @@ void loop(void)
   if (isnan(event.relative_humidity)) {
     // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
     Serial.println(F("Error reading humidity IN!"));
-    // BRUTTO TRY FOR SOME TIME AND IF IT DOESN'T RESPOND THAN ALWAYS RETURN AN ERROR VALUE AND CALL IT NO MORE
+    humidity=-126;
   }
   // Display the humidity values in order to test/debug
   else {
@@ -181,6 +181,8 @@ void loop(void)
       }
     count=count+1;
   }
+
+    Serial.println(detect/MaxCount);
 
     
   // FILE_WRITE starts from the end of the file to read/save datas
