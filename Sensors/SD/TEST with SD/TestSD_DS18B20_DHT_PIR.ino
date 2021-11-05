@@ -31,6 +31,7 @@ DallasTemperature sensors(&oneWire);
 
 // Number of TEMPERATURE sensors PREDEFINED
 const int numDS18B20 = 5;
+float MaxCount=10000000;
 
 // BRUTTO float numbers require 2byte, we could save the measurements instantly as integer types (int=measurement*100)
 float tempC[numDS18B20]; //12 significant bits
@@ -81,12 +82,10 @@ void setup(void)
 void loop(void)
 { 
   
-  // PIR sensor state and counts
-  int PIRstate = LOW; // Start assuming no motion detected
-  int PIRread = 0;
-  int count = 0;
-  int max = 0; // PIR measurements are made roughly each 10s for roughly 5 minutes (10s*30=300s)
-  // Sensor PIR is calibrated with the Sensor_PIR_Calibrate.ino program to stay in alarm for roughly 9.5s
+  // PIR sensor "number" of detections=detect and "number" of nothing=tool used to have the same time (a discapito della battery)
+  long count=0;
+  unsigned long detect=0;
+  unsigned long nothing=0;
   
   // Send command to all DS18B20 for temperature conversion
   sensors.requestTemperatures();
@@ -169,24 +168,17 @@ void loop(void)
   // BRUTTO it could be used as in the examples of PIR, which implies a better accuracy by interrupting the cycle using an external CLOCK
   // BRUTTO The external CLOCK could also be used to WAKE UP arduino from sleep
   // Get percentual time of activation of PIR
-  while (max<30){
+  // In order for this to work we had to estimate the time on which the PIR was IN ALLARM (~we set it to 1.6s manually) and the time on which the alarm was BLOCKED (~3s from datasheet)
+  // We used the program PIR_alarm_stop_time.ino and estimated the time through a mean of time shown at the Serial Monitor
+  while (count<MaxCount){
     PIRread = digitalRead(PIR_PIN);  // read PIR value
-    if (PIRread == HIGH) {
-      if (PIRstate == LOW) {
-        Serial.println("Motion detected!");
-        count=count+1;
-        Serial.print("Number of activations:");
-        Serial.println(count);
-        PIRstate = HIGH;
+    if (PIRread == HIGH) { 
+        detect=detect+1;
       }
-    } else {
-      if (PIRstate == HIGH){
-        Serial.println("Motion ended!");
-        PIRstate = LOW;
+      else{
+        nothing=nothing+1;
       }
-    }
-    delay(10000);
-    max=max+1;
+    count=count+1;
   }
 
     
@@ -203,7 +195,7 @@ void loop(void)
     //myFile.println(humidity[i]);
     //}
     myFile.println(humidity);
-    myFile.println(count/30.0); // Verificare torni un float
+    myFile.println(detect/MaxCount);
     
   myFile.close();
   }
