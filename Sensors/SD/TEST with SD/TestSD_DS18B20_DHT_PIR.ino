@@ -60,7 +60,7 @@ void setup(void)
   // Start up the library for DS18B20 and for DHT
   sensors.begin();
   dht_in.begin();
-  dht_out.begin();
+  //dht_out.begin();
   pinMode(PIR_PIN, INPUT);
   Serial.begin(9600);
   
