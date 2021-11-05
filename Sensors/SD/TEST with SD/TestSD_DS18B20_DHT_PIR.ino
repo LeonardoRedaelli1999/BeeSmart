@@ -32,6 +32,7 @@ DallasTemperature sensors(&oneWire);
 // Number of TEMPERATURE sensors PREDEFINED
 const int numDS18B20 = 5;
 float MaxCount=10000000;
+int PIRread = 0;
 
 // BRUTTO float numbers require 2byte, we could save the measurements instantly as integer types (int=measurement*100)
 float tempC[numDS18B20]; //12 significant bits
