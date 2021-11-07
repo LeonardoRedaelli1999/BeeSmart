@@ -205,5 +205,5 @@ void loop(void)
   }
   
   
-  delay(10000);
+  delay(60000);
 }
