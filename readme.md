@@ -11,14 +11,15 @@ T5=OUTSIDE
 
 HUMIDITY:
 DHT0=humidity inside the beehive
-DHT1=humidity outside the beehive
-PIR
+
+PIR:
 Flux oh bees entering and exiting the beehive to have an idea of the activity
-WEIGHT
+
+WEIGHT:
 Weight of the beehive
 
-LoRa
+Lo-Ra:
 transmits the data to a second arduino
 
-Data Analysis
+DATA ANALYSIS:
 Code to analyse data with Matlab
