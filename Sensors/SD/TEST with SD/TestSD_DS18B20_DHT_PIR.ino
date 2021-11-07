@@ -1,3 +1,5 @@
+// 644 measurements in 24h -> 26.833333 measurements in 1h OR 1 measurement each 134161.5ms -> 2min:14s:162ms
+
 // Libraries for DS18B20
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -10,8 +12,7 @@
 #include <SD.h>
 File myFile;
 
-// Initialize the commands for SLEEP to save energy
-//ISR(WDT_vect) { Sleepy::watchdogEvent(); }
+// Initialize the commands for SLEEP to save energy (from course slides: Enerlib.h)
 
 // Sensor type for the humidity sensor
 #define DHTTYPE DHT11   // DHT 11
