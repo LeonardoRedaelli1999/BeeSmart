@@ -1,5 +1,3 @@
-// 644 measurements in 24h -> 26.833333 measurements in 1h OR 1 measurement each 134161.5ms -> 2min:14s:162ms
-
 // Libraries for DS18B20
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -7,25 +5,25 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
-// Libraries for comunicating with the SD
+// Libraries for comunicating via LoRa
 #include <SPI.h>
-#include <SD.h>
-File myFile;
+#include <LoRa.h>
 
 // Initialize the commands for SLEEP to save energy (from course slides: Enerlib.h)
 
 // Sensor type for the humidity sensor
-#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22   // DHT 22
 // Data wire bus for DS18B20 in digital pin 2
-#define ONE_WIRE_BUS 2
-// Humidity sensor DHT INSIDE (pin 3) and OUTSIDE (pin 4) the beehive
+#define ONE_WIRE_BUS 4 // BRUTTO TESTARE
+// Humidity sensor DHT INSIDE pin 3 the beehive
 #define DHT_IN_PIN 3
 //#define DHT_OUT_PIN 4
 #define PIR_PIN 5
 #define LEDpin 13
+//LoRa Ra-02 pin connections: GND->GND, 3.3V->3.3V, RST->D9, DIO0->D2, NSS->D10, MOSI->D11, MISO->D12, SCK->D13
 
 // Setup a oneWire instance to communicate with any OneWire device
-OneWire oneWire(ONE_WIRE_BUS);
+OneWire oneWire(ONE_WIRE_BUS); //
 // Pass oneWire reference to DallasTemperature library for DS18B20
 DallasTemperature sensors(&oneWire);
 
@@ -71,10 +69,11 @@ void setup(void)
   pinMode(LEDpin, OUTPUT);
   digitalWrite(LEDpin, HIGH);
   delay(3000);
-  if (!SD.begin(10)) {
-    // If SD initialization didn't go as planned the light stay on
+  if (!LoRa.begin(433E6)) {
+    Serial.println("Starting LoRa failed!");
     while (1);
   }
+  // BRUTTO we have to implement the check for connection to receiver
   digitalWrite(LEDpin, LOW);
   
   // BRUTTO We saves datas on a MicroSD so we could send them via LoRa only once a day (Solar Panel, so when light is max)
@@ -175,9 +174,11 @@ void loop(void)
   while (count<MaxCount){
     PIRread = digitalRead(PIR_PIN);  // read PIR value
     if (PIRread == HIGH) { 
+        delay(100);
         detect=detect+1;
       }
       else{
+        delay(100);
         nothing=nothing+1;
       }
     count=count+1;
@@ -203,6 +204,24 @@ void loop(void)
     
   myFile.close();
   }
+  
+  // send packet
+  LoRa.beginPacket();
+  LoRa.print("T1 ");
+  LoRa.print(tempC[0]);
+  LoRa.print(" T2 ");
+  LoRa.print(tempC[1]);
+  LoRa.print(" T3 ");
+  LoRa.print(tempC[2]);
+  LoRa.print(" T4 ");
+  LoRa.print(tempC[3]);
+  LoRa.print("T5 ");
+  LoRa.print( tempC[4]);
+  LoRa.print(" H ");
+  LoRa.print(humidity);
+  LoRa.print(" P1 ");
+  LoRa.println(detect/MaxCount*0.333);
+  LoRa.endPacket();
   
   
   delay(60000);
