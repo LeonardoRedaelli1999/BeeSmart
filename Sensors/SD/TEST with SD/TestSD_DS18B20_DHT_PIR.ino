@@ -1,4 +1,4 @@
-// 644 measurements in 24h -> 26.833333 measurements in 1h OR 1 measurement each 134161.5ms -> 2min:14s:162ms
+// 551 measurements in 24h -> 22.9583333 measurements in 1h OR 1 measurement each 156805.808ms -> 2min:36s:805ms
 
 // Libraries for DS18B20
 #include <OneWire.h>
