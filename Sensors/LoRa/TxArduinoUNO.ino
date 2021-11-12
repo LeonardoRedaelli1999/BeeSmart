@@ -30,11 +30,11 @@ DallasTemperature sensors(&oneWire);
 
 // Number of TEMPERATURE sensors PREDEFINED
 const int numDS18B20 = 5;
-float MaxCount=10000000;
+float MaxCount=1200;
 int PIRread = 0;
 
 // BRUTTO float numbers require 2byte, we could save the measurements instantly as integer types (int=measurement*100)
-float tempC[numDS18B20]; //12 significant bits
+int tempC[numDS18B20]; //12 significant bits
 
 // BRUTTO Addresses of DS18B20 sensors retrived with the Sensor_Identifier_DS18B20.ino program. This procedure can be AUTOMATIZED for a large scale production 
 DeviceAddress address_T1 = {0x28, 0x96, 0x25, 0x46, 0x5F, 0x20, 0x01, 0x65}; // T1=CLUSTER of bees
@@ -49,7 +49,7 @@ DeviceAddress address_T5 = {0x28, 0x49, 0x7C, 0x51, 0x5F, 0x20, 0x01, 0x5D}; // 
 
 //float temperature[numDHT]; // Temperature measured from the DHT, not needed since we used sensors T1 T2 T3 T4 T5
 //float humidity[numDHT];
-float humidity;
+int humidity;
 
 // Initialize the DHT sensors INSIDE and OUTSIDE the beehive
 DHT_Unified dht_in(DHT_IN_PIN, DHTTYPE);
@@ -84,24 +84,24 @@ void loop(void)
 { 
   
   // PIR sensor "number" of detections=detect and "number" of nothing=tool used to have the same time (a discapito della battery)
-  long count=0;
-  unsigned long detect=0;
-  unsigned long nothing=0;
+  int count=0;
+  int detect=0;
+  int nothing=0;
   
   // Send command to all DS18B20 for temperature conversion
   sensors.requestTemperatures();
   
   // Get temperature from a specified sensor (position of sensors is physically written on the sensor), in order to keep track for the physical position of sensors
-  tempC[0] = sensors.getTempC(address_T1);
-  //delay(200);
-  tempC[1] = sensors.getTempC(address_T2);
-  //delay(200);
-  tempC[2] = sensors.getTempC(address_T3);
-  //delay(200);
-  tempC[3] = sensors.getTempC(address_T4);
-  //delay(200);
-  tempC[4] = sensors.getTempC(address_T5);
-  //delay(200);
+  tempC[0] = sensors.getTempC(address_T1)*100;
+  delay(100);
+  tempC[1] = sensors.getTempC(address_T2)*100;
+  delay(100);
+  tempC[2] = sensors.getTempC(address_T3)*100;
+  delay(100);
+  tempC[3] = sensors.getTempC(address_T4)*100;
+  delay(100);
+  tempC[4] = sensors.getTempC(address_T5)*100;
+  delay(100);
   
   // Display the temperature values in order to test/debug
   for (int i = 0;  i < numDS18B20;  i++)
@@ -110,7 +110,7 @@ void loop(void)
     Serial.print("Sensor T");
     Serial.print(i+1);
     Serial.print(" : ");
-    Serial.print(tempC[i]);
+    Serial.print(tempC[i]/100.0);
     Serial.print("C ");
   }
   
@@ -128,9 +128,9 @@ void loop(void)
   }
   // Display the humidity values in order to test/debug
   else {
-    humidity=event.relative_humidity;
+    humidity=event.relative_humidity*100;
     Serial.print(F("Humidity in: "));
-    Serial.print(humidity);
+    Serial.print(humidity/100.0);
     Serial.println(F("%"));
   }
   
@@ -186,43 +186,49 @@ void loop(void)
 
     Serial.println(detect/MaxCount);
 
-    
-  // FILE_WRITE starts from the end of the file to read/save datas
-  // BRUTTO Save in this order: the 5 temperature, the humidity and the percentual of activation of the PIR
-  myFile = SD.open("test.txt", FILE_WRITE);
   
-  // myFile = TRUE if it has been opened correctly
-  if (myFile) {
-    for (int i = 0; i < numDS18B20; i++) {
-    myFile.println(tempC[i]);
-    }
-    //for (int i = 0; i < numDHT; i++) {
-    //myFile.println(humidity[i]);
-    //}
-    myFile.println(humidity);
-    myFile.println(detect/MaxCount);
-    
-  myFile.close();
-  }
-  
-  // send packet
+  // send packets of data, 1 packet each measure
+  // BRUTTO ASCII table to make the markers different as much as possible
   LoRa.beginPacket();
-  LoRa.print("T1 ");
+  LoRa.print("a");
   LoRa.print(tempC[0]);
-  LoRa.print(" T2 ");
+  LoRa.endPacket();
+  delay(100);
+  
+  LoRa.beginPacket();
+  LoRa.print("d");
   LoRa.print(tempC[1]);
-  LoRa.print(" T3 ");
+  LoRa.endPacket();
+  delay(100);
+  
+  LoRa.beginPacket();
+  LoRa.print("h");
   LoRa.print(tempC[2]);
-  LoRa.print(" T4 ");
+  LoRa.endPacket();
+  delay(100);
+  
+  LoRa.beginPacket();
+  LoRa.print("n");
   LoRa.print(tempC[3]);
-  LoRa.print("T5 ");
-  LoRa.print( tempC[4]);
-  LoRa.print(" H ");
+  LoRa.endPacket();
+  delay(100);
+  
+  LoRa.beginPacket();
+  LoRa.print("p");
+  LoRa.print(tempC[4]);
+  LoRa.endPacket();
+  delay(100);
+  
+  LoRa.beginPacket();
+  LoRa.print("w");
   LoRa.print(humidity);
-  LoRa.print(" P1 ");
-  LoRa.println(detect/MaxCount*0.333);
+  LoRa.endPacket();
+  delay(100);
+  
+  LoRa.beginPacket();
+  LoRa.print("z");
+  LoRa.print(detect/MaxCount*333.3);
   LoRa.endPacket();
   
-  
-  delay(60000);
+  delay(60000); // BRUTTO sleep
 }
