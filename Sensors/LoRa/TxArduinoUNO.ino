@@ -13,11 +13,10 @@
 
 // Sensor type for the humidity sensor
 #define DHTTYPE DHT22   // DHT 22
-// Data wire bus for DS18B20 in digital pin 2
-#define ONE_WIRE_BUS 4 // BRUTTO TESTARE
 // Humidity sensor DHT INSIDE pin 3 the beehive
 #define DHT_IN_PIN 3
-//#define DHT_OUT_PIN 4
+// Data wire bus for DS18B20 in digital pin 4
+#define ONE_WIRE_BUS 4 // BRUTTO TESTARE
 #define PIR_PIN 5
 #define LEDpin 13
 //LoRa Ra-02 pin connections: GND->GND, 3.3V->3.3V, RST->D9, DIO0->D2, NSS->D10, MOSI->D11, MISO->D12, SCK->D13
@@ -45,7 +44,7 @@ DeviceAddress address_T5 = {0x28, 0x49, 0x7C, 0x51, 0x5F, 0x20, 0x01, 0x5D}; // 
 
 
 // Number of HUMIDITY sensors PREDEFINED
-//const int numDHT = 2;
+//const int numDHT = 1;
 
 //float temperature[numDHT]; // Temperature measured from the DHT, not needed since we used sensors T1 T2 T3 T4 T5
 //float humidity[numDHT];
