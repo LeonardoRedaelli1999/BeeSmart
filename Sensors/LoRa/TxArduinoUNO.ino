@@ -33,7 +33,7 @@ const int numDS18B20 = 5;
 float MaxCount=1200;
 int PIRread1 = 0;
 int PIRread2 = 0;
-int tempC[numDS18B20];
+int T[numDS18B20];
 
 // BRUTTO Addresses of DS18B20 sensors retrived with the Sensor_Identifier_DS18B20.ino program. This procedure can be AUTOMATIZED for a large scale production 
 DeviceAddress address_T1 = {0x28, 0x96, 0x25, 0x46, 0x5F, 0x20, 0x01, 0x65}; // T1=CLUSTER of bees
@@ -88,15 +88,15 @@ void loop(void)
   sensors.requestTemperatures();
   
   // Get temperature from a specified sensor (position of sensors is physically written on the sensor), in order to keep track for the physical position of sensors
-  tempC[0] = sensors.getTempC(address_T1)*100;
+  T[0] = sensors.getTempC(address_T1)*100;
   delay(100);
-  tempC[1] = sensors.getTempC(address_T2)*100;
+  T[1] = sensors.getTempC(address_T2)*100;
   delay(100);
-  tempC[2] = sensors.getTempC(address_T3)*100;
+  T[2] = sensors.getTempC(address_T3)*100;
   delay(100);
-  tempC[3] = sensors.getTempC(address_T4)*100;
+  T[3] = sensors.getTempC(address_T4)*100;
   delay(100);
-  tempC[4] = sensors.getTempC(address_T5)*100;
+  T[4] = sensors.getTempC(address_T5)*100;
   delay(100);
   
   // Display the temperature values in order to test/debug
@@ -106,7 +106,7 @@ void loop(void)
     Serial.print("Sensor T");
     Serial.print(i+1);
     Serial.print(" : ");
-    Serial.print(tempC[i]/100.0);
+    Serial.print(T[i]/100.0);
     Serial.print("C ");
   }
   
@@ -116,7 +116,7 @@ void loop(void)
   sensors_event_t event;
   
   // Get humidity and print its value
-  dht_in.humidity().getEvent(&event);
+  dht.humidity().getEvent(&event);
   if (isnan(event.relative_humidity)) {
     // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
     Serial.println(F("Error reading humidity IN!"));
@@ -190,45 +190,45 @@ void loop(void)
     count=count+1;
   }
 
-    Serial.println(detect1/MaxCount);
-    Serial.println(detect2/MaxCount);
+    Serial.println(detect1/MaxCount*333.3);
+    Serial.println(detect2/MaxCount*333.3);
 
   
-  // send packets of data, 1 packet each measure
+  // Send packets of data, 1 packet each measure
   // In order to check for possible errors during transmission, the identifing letters differs for more than 2 bits in their ASCII representation 
   // Resulting in A, F, K, P, c, h, m, r. Each packet has 2 identifiers: the first representing the beehive, while the second one representing the sensor.
   LoRa.beginPacket();
   LoRa.print("A");
   LoRa.print("A");
-  LoRa.print(tempC[0]);
+  LoRa.print(T[0]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
   LoRa.print("A");
   LoRa.print("F");
-  LoRa.print(tempC[1]);
+  LoRa.print(T[1]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
   LoRa.print("A");
   LoRa.print("K");
-  LoRa.print(tempC[2]);
+  LoRa.print(T[2]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
   LoRa.print("A");
   LoRa.print("P");
-  LoRa.print(tempC[3]);
+  LoRa.print(T[3]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
   LoRa.print("A");
   LoRa.print("c");
-  LoRa.print(tempC[4]);
+  LoRa.print(T[4]);
   LoRa.endPacket();
   delay(100);
   
@@ -242,7 +242,13 @@ void loop(void)
   LoRa.beginPacket();
   LoRa.print("A");
   LoRa.print("m");
-  LoRa.print(detect/MaxCount*333.3);
+  LoRa.print(detect1/MaxCount*333.3);
+  LoRa.endPacket();
+  
+  LoRa.beginPacket();
+  LoRa.print("A");
+  LoRa.print("r");
+  LoRa.print(detect2/MaxCount*333.3);
   LoRa.endPacket();
   
   delay(60000); // BRUTTO sleep
