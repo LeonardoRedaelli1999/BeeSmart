@@ -130,38 +130,6 @@ void loop(void)
     Serial.println(F("%"));
   }
   
-  /*
-  // Get humidity and print its value
-  dht_in.humidity().getEvent(&event);
-  if (isnan(event.relative_humidity)) {
-    // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
-    Serial.println(F("Error reading humidity IN!"));
-    // BRUTTO TRY FOR SOME TIME AND IF IT DOESN'T RESPOND THAN ALWAYS RETURN AN ERROR VALUE AND CALL IT NO MORE
-  }
-  // Display the humidity values in order to test/debug
-  else {
-    humidity[0]=event.relative_humidity;
-    Serial.print(F("Humidity in: "));
-    Serial.print(humidity[0]);
-    Serial.println(F("%"));
-  }
-  
-   // Get humidity and print its value
-  dht_out.humidity().getEvent(&event);
-  if (isnan(event.relative_humidity)) {
-    // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
-    Serial.println(F("Error reading humidity OUT!"));
-    // BRUTTO TRY FOR SOME TIME AND IF IT DOESN'T RESPOND THAN ALWAYS RETURN AN ERROR VALUE AND CALL IT NO MORE
-  }
-  // Display the humidity values in order to test/debug
-  else {
-    humidity[1]=event.relative_humidity;
-    Serial.print(F("Humidity out: "));
-    Serial.print(humidity[1]);
-    Serial.println(F("%"));
-  }
-  */
-  
   // BRUTTO it could be used as in the examples of PIR, which implies a better accuracy by interrupting the cycle using an external CLOCK
   // BRUTTO The external CLOCK could also be used to WAKE UP arduino from sleep
   // Get percentual time of activation of PIR
@@ -182,9 +150,9 @@ void loop(void)
         delay(100);
         detect2=detect2+1;
         nothing=nothing+1;
-      } else if (PIRread1 == LOW && PIRread2 == LOW) {
+      } else {
         delay(100);
-        nothing=nothing+1;
+        nothing=nothing+1; // These operations are useless, they are done in order to stop for the same amount of time in each else
         nothing=nothing+1;
       }
     count=count+1;
