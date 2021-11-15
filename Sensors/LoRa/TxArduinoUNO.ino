@@ -187,45 +187,53 @@ void loop(void)
 
   
   // send packets of data, 1 packet each measure
-  // BRUTTO ASCII table to make the markers different as much as possible
+  // In order to check for possible errors during transmission, the identifing letters differs for more than 2 bits in their ASCII representation 
+  // Resulting in A, F, K, P, c, h, m, r. Each packet has 2 identifiers: the first representing the beehive, while the second one representing the sensor.
   LoRa.beginPacket();
-  LoRa.print("a");
+  LoRa.print("A");
+  LoRa.print("A");
   LoRa.print(tempC[0]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
-  LoRa.print("d");
+  LoRa.print("A");
+  LoRa.print("F");
   LoRa.print(tempC[1]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
-  LoRa.print("h");
+  LoRa.print("A");
+  LoRa.print("K");
   LoRa.print(tempC[2]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
-  LoRa.print("n");
+  LoRa.print("A");
+  LoRa.print("P");
   LoRa.print(tempC[3]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
-  LoRa.print("p");
+  LoRa.print("A");
+  LoRa.print("c");
   LoRa.print(tempC[4]);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
-  LoRa.print("w");
+  LoRa.print("A");
+  LoRa.print("h");
   LoRa.print(humidity);
   LoRa.endPacket();
   delay(100);
   
   LoRa.beginPacket();
-  LoRa.print("z");
+  LoRa.print("A");
+  LoRa.print("m");
   LoRa.print(detect/MaxCount*333.3);
   LoRa.endPacket();
   
