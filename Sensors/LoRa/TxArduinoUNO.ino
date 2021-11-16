@@ -122,7 +122,7 @@ void loop(void)
     // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
     Serial.println(F("Error reading humidity IN!")); // Debug
     humidity=-12600;
-  else {
+  } else {
     humidity=event.relative_humidity*100;
     Serial.print(F("Humidity in: ")); // Debug
     Serial.print(humidity/100.0);
