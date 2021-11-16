@@ -16,7 +16,7 @@
 // Humidity sensor DHT INSIDE pin 3 the beehive
 #define DHT_PIN 3
 // Data wire bus for DS18B20 in digital pin 4
-#define ONE_WIRE_BUS 4 // BRUTTO TESTARE
+#define ONE_WIRE_BUS 4
 #define PIR_PIN1 5
 #define PIR_PIN2 6
 #define LEDpin 13
@@ -39,14 +39,12 @@ int T[numDS18B20];
 DeviceAddress address_T1 = {0x28, 0x96, 0x25, 0x46, 0x5F, 0x20, 0x01, 0x65}; // T1=CLUSTER of bees
 DeviceAddress address_T2 = {0x28, 0x3E, 0xA8, 0x93, 0x63, 0x20, 0x01, 0x5A}; // T2=LEFT or EST STOCKS
 DeviceAddress address_T3 = {0x28, 0xE2, 0x8A, 0x7A, 0x62, 0x20, 0x01, 0xE9}; // T3=RIGHT or OVEST STOCKS
-DeviceAddress address_T4 = {0x28, 0x65, 0x7B, 0x5C, 0x5F, 0x20, 0x01, 0x5A}; // T4=CLUSTER of bees (safety)
+//DeviceAddress address_T4 = {0x28, 0x65, 0x7B, 0x5C, 0x5F, 0x20, 0x01, 0x5A}; // T4=CLUSTER of bees (safety)
 DeviceAddress address_T5 = {0x28, 0x49, 0x7C, 0x51, 0x5F, 0x20, 0x01, 0x5D}; // T5=OUTSIDE
 
-//float temperature[numDHT]; // Temperature measured from the DHT, not needed since we used sensors T1 T2 T3 T4 T5
-// BRUTTO we need to remove 1 DS18B20 sensor and measure temperature from DHT22
 int humidity;
 
-// Initialize the DHT sensors INSIDE and OUTSIDE the beehive
+// Initialize the DHT sensors INSIDE the beehive
 DHT_Unified dht(DHT_PIN, DHTTYPE);
 
 
@@ -76,6 +74,8 @@ void setup(void)
 
 void loop(void)
 { 
+  // BRUTTO Not optimized from a memory point of view, since sensors_event_t is a ~40byte data and we only need a 4byte float/int
+  sensors_event_t event;
   
   // PIR sensor "number" of detections=detect and "number" of nothing=tool used to have the same time (a discapito della battery)
   int count=0;
@@ -94,14 +94,19 @@ void loop(void)
   delay(100);
   T[2] = sensors.getTempC(address_T3)*100;
   delay(100);
-  T[3] = sensors.getTempC(address_T4)*100;
-  delay(100);
+  //T[3] = sensors.getTempC(address_T4)*100;
+  //delay(100);
+  dht.temperature().getEvent(&event);
+  if (isnan(event.temperature)) {
+    T[3]=-12700;
+  } else {
+    T[3]=event.temperature*100;
+  }
   T[4] = sensors.getTempC(address_T5)*100;
   delay(100);
   
   // Display the temperature values in order to test/debug
-  for (int i = 0;  i < numDS18B20;  i++)
-  {
+  for (int i = 0;  i < numDS18B20;  i++) {
     // BRUTTO Serial.print always try to print even though Arduino is not connected to a Serial Monitor?????????????????
     Serial.print("Sensor T");
     Serial.print(i+1);
@@ -112,20 +117,14 @@ void loop(void)
   
   Serial.println("");
   
-  // BRUTTO Not optimized from a memory point of view, since sensors_event_t is a ~40byte data and we only need a 2byte float
-  sensors_event_t event;
-  
-  // Get humidity and print its value
   dht.humidity().getEvent(&event);
   if (isnan(event.relative_humidity)) {
     // BRUTTO Serial.print(F()) using F() we are moving constant strings to the program memory instead of the ram
-    Serial.println(F("Error reading humidity IN!"));
-    humidity=-126;
-  }
-  // Display the humidity values in order to test/debug
+    Serial.println(F("Error reading humidity IN!")); // Debug
+    humidity=-12600;
   else {
     humidity=event.relative_humidity*100;
-    Serial.print(F("Humidity in: "));
+    Serial.print(F("Humidity in: ")); // Debug
     Serial.print(humidity/100.0);
     Serial.println(F("%"));
   }
