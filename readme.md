@@ -10,7 +10,7 @@ T4=CLUSTER of bees (safety)
 T5=OUTSIDE
 
 HUMIDITY:
-DHT0=humidity inside the beehive
+DHT22=humidity inside the beehive
 
 PIR:
 Flux oh bees entering and exiting the beehive to have an idea of the activity
