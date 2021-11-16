@@ -15,11 +15,14 @@ DHT0=humidity inside the beehive
 PIR:
 Flux oh bees entering and exiting the beehive to have an idea of the activity
 
-WEIGHT:
-Weight of the beehive
-
 Lo-Ra:
 transmits the data to a second arduino
+
+ESP32:
+Receive with LoRa the data from the beehives and uploads them with wifi
+
+ThingSpeak:
+Analysis of the data with Matlab code
 
 DATA ANALYSIS:
 Code to analyse data with Matlab
