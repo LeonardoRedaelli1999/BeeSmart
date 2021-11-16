@@ -5,11 +5,13 @@
 #include "ThingSpeak.h" // always include thingspeak header file after other header files and custom macros
 
 // LoRa Ra-02 pins
-#define ss 15
-#define rst 4
-#define dio0 3
+#define ss 15 // SPI NSS GPIO15 
+#define rst 4 // RESET GPIO 4
+#define dio0 0 // DIO0 GPIO0
 #define LEDpin 2
-
+// MISO GPIO19
+// MOSI GPIO23
+// SPI-CLK GPIO18
 
 // In order to check for possible errors during transmission, the identifing letters differs for more than 2 bits in their ASCII representation
 const char BEEHIVES_ID[10]={'A','F','K','P','U','c','h','m','r','w'};
@@ -97,7 +99,7 @@ void onReceive(int packetSize) {
   bool sensor_found=false;
   unsigned long BeehiveChannelNumber;
 
-  // read packet
+  // read packet FIFO
   for (int i = 0; i < packetSize; i++) {
     packet[i]=(char)LoRa.read();
     Serial.print(packet[i]); // Debug
@@ -151,7 +153,7 @@ void onReceive(int packetSize) {
           return;
         }
       }
-      ThingSpeak.setField(i, (float)(atoi(packet+2)/100.00));
+      ThingSpeak.setField(i, (float)(atoi(packet+2)/100.0));
       sensor_found=true;
     }
   }
