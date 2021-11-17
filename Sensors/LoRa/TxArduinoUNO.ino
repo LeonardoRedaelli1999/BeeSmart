@@ -13,7 +13,7 @@
 
 // Sensor type for the humidity sensor
 #define DHTTYPE DHT22   // DHT 22
-// Humidity sensor DHT INSIDE pin 3
+// Humidity sensor DHT INSIDE pin 3 the beehive
 #define DHT_PIN 3
 // Data wire bus for DS18B20 in digital pin 4
 #define ONE_WIRE_BUS 4
@@ -158,7 +158,7 @@ void loop(void)
   }
 
     Serial.println(detect1/MaxCount*333.3);
-    Serial.println(detect2/MaxCount*333.3);
+    Serial.println(detect2/MaxCount*449.0);
 
   
   // Send packets of data, 1 packet each measure
@@ -215,7 +215,7 @@ void loop(void)
   LoRa.beginPacket();
   LoRa.print("A");
   LoRa.print("r");
-  LoRa.print(detect2/MaxCount*333.3);
+  LoRa.print(detect2/MaxCount*449.0);
   LoRa.endPacket();
   
   delay(60000); // BRUTTO sleep
