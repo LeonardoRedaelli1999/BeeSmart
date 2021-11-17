@@ -13,13 +13,13 @@
 
 // Sensor type for the humidity sensor
 #define DHTTYPE DHT22   // DHT 22
-// Humidity sensor DHT INSIDE pin 3 the beehive
+// Humidity sensor DHT INSIDE pin 3
 #define DHT_PIN 3
 // Data wire bus for DS18B20 in digital pin 4
 #define ONE_WIRE_BUS 4
 #define PIR_PIN1 5
 #define PIR_PIN2 6
-#define LEDpin 13
+#define LEDpin 8
 //LoRa Ra-02 pin connections: GND->GND, 3.3V->3.3V, RST->D9, DIO0->D2, NSS->D10, MOSI->D11, MISO->D12, SCK->D13
 
 // Setup a oneWire instance to communicate with any OneWire device
