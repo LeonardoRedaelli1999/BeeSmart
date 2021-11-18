@@ -6,9 +6,9 @@
 
 // LoRa Ra-02 pins
 #define ss 15 // SPI NSS GPIO15 
-#define rst 4 // RESET GPIO 4
-#define dio0 0 // DIO0 GPIO0
-#define LEDpin 2
+#define rst 4 // RESET GPIO4
+#define dio0 2 // DIO0 GPIO2
+#define LEDpin 25
 // MISO GPIO19
 // MOSI GPIO23
 // SPI-CLK GPIO18
