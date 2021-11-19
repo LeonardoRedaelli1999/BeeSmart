@@ -211,6 +211,7 @@ void loop(void)
   LoRa.print("m");
   LoRa.print(detect1/MaxCount*333.3);
   LoRa.endPacket();
+  delay(100);
   
   LoRa.beginPacket();
   LoRa.print("A");
