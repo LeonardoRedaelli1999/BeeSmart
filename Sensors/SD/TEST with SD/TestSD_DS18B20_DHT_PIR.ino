@@ -23,7 +23,7 @@ File myFile;
 //#define DHT_OUT_PIN 4
 #define PIR_PIN1 5 // Fiocco NERO, tempo di attivazione ~1.6s e bloccato ~3s
 #define PIR_PIN2 6 // Fiocco BIANCO, tempo di attivazione ~1.2s e bloccato ~4.1s
-#define LEDpin 13
+#define LEDpin 8
 
 // Setup a oneWire instance to communicate with any OneWire device
 OneWire oneWire(ONE_WIRE_BUS);
