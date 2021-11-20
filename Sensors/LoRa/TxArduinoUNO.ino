@@ -17,8 +17,8 @@
 #define DHT_PIN 3
 // Data wire bus for DS18B20 in digital pin 4
 #define ONE_WIRE_BUS 4
-#define PIR_PIN1 5 // Fiocco NERO, tempo di attivazione ~1.6s e bloccato ~3s
-#define PIR_PIN2 6 // Fiocco BIANCO, tempo di attivazione ~1.2s e bloccato ~4.1s
+#define PIR_PIN1 5 // Fiocco NERO, RIGHT, tempo di attivazione ~1.6s e bloccato ~3s
+#define PIR_PIN2 6 // Fiocco BIANCO, LEFT, tempo di attivazione ~1.2s e bloccato ~4.1s
 #define LEDpin 8
 //LoRa Ra-02 pin connections: GND->GND, 3.3V->3.3V, RST->D9, DIO0->D2, NSS->D10, MOSI->D11, MISO->D12, SCK->D13
 
