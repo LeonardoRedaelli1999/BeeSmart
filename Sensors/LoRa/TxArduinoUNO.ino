@@ -17,8 +17,8 @@
 #define DHT_PIN 3
 // Data wire bus for DS18B20 in digital pin 4
 #define ONE_WIRE_BUS 4
-#define PIR_PIN1 5
-#define PIR_PIN2 6
+#define PIR_PIN1 5 // Fiocco NERO, tempo di attivazione ~1.6s e bloccato ~3s
+#define PIR_PIN2 6 // Fiocco BIANCO, tempo di attivazione ~1.2s e bloccato ~4.1s
 #define LEDpin 8
 //LoRa Ra-02 pin connections: GND->GND, 3.3V->3.3V, RST->D9, DIO0->D2, NSS->D10, MOSI->D11, MISO->D12, SCK->D13
 
@@ -59,14 +59,13 @@ void setup(void)
   
   // Check visually for the power light (spia di accensione)
   pinMode(LEDpin, OUTPUT);
-  digitalWrite(LEDpin, HIGH);
   delay(3000);
   if (!LoRa.begin(433E6)) {
     Serial.println("Starting LoRa failed!");
+    digitalWrite(LEDpin, HIGH);
     while (1);
   }
   // BRUTTO we have to implement the check for connection to receiver
-  digitalWrite(LEDpin, LOW);
   
   // BRUTTO We saves datas on a MicroSD so we could send them via LoRa only once a day (Solar Panel, so when light is max)
   // However if the battery ended or for every inconvenient crash we should send all the datas that probably wasn't able to send
@@ -89,13 +88,13 @@ void loop(void)
   
   // Get temperature from a specified sensor (position of sensors is physically written on the sensor), in order to keep track for the physical position of sensors
   T[0] = sensors.getTempC(address_T1)*100;
-  delay(100);
+  delay(50);
   T[1] = sensors.getTempC(address_T2)*100;
-  delay(100);
+  delay(50);
   T[2] = sensors.getTempC(address_T3)*100;
-  delay(100);
+  delay(50);
   //T[3] = sensors.getTempC(address_T4)*100;
-  //delay(100);
+  //delay(50);
   dht.temperature().getEvent(&event);
   if (isnan(event.temperature)) {
     T[3]=-12700;
@@ -103,7 +102,7 @@ void loop(void)
     T[3]=event.temperature*100;
   }
   T[4] = sensors.getTempC(address_T5)*100;
-  delay(100);
+  delay(50);
   
   // Display the temperature values in order to test/debug
   for (int i = 0;  i < numDS18B20;  i++) {
