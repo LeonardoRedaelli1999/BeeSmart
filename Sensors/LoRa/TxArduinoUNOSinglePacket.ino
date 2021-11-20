@@ -79,10 +79,10 @@ void loop(void)
   sensors_event_t event;
   
   // PIR sensor "number" of detections=detect and "number" of nothing=tool used to have the same time (a discapito della battery)
-  int count=0;
-  int nothing=0;
-  int detect1=0;
-  int detect2=0;
+  short int count=0;
+  short int nothing=0;
+  short int detect1=0;
+  short int detect2=0;
   
   
   // Send command to all DS18B20 for temperature conversion
@@ -170,30 +170,36 @@ void loop(void)
   // Resulting in A, F, K, P, c, h, m, r. Each packet has 2 identifiers: the first representing the beehive, while the second one representing the sensor.
   LoRa.beginPacket();
   LoRa.print("A");
+  LoRa.print((char)(T[0]>>8));
+  LoRa.print((char)T[0]);
   
   LoRa.print("A");
-  LoRa.print(T[0]);
+  LoRa.print((char)(T[1]>>8));
+  LoRa.print((char)T[1]);
   
-  LoRa.print("F");
-  LoRa.print(T[1]);
+  LoRa.print("A");
+  LoRa.print((char)(T[2]>>8));
+  LoRa.print((char)T[2]);
   
-  LoRa.print("K");
-  LoRa.print(T[2]);
+  LoRa.print("A");
+  LoRa.print((char)(T[3]>>8));
+  LoRa.print((char)T[3]);
   
-  LoRa.print("P");
-  LoRa.print(T[3]);
+  LoRa.print("A");
+  LoRa.print((char)(T[4]>>8));
+  LoRa.print((char)T[4]);
   
-  LoRa.print("c");
-  LoRa.print(T[4]);
+  LoRa.print("A");
+  LoRa.print((char)(humidity>>8));
+  LoRa.print((char)humidity);
   
-  LoRa.print("h");
-  LoRa.print(humidity);
+  LoRa.print("A");
+  LoRa.print((char)(PIR1>>8));
+  LoRa.print((char)PIR1);
   
-  LoRa.print("m");
-  LoRa.print(PIR1);
-  
-  LoRa.print("r");
-  LoRa.print(PIR2);
+  LoRa.print("A");
+  LoRa.print((char)(PIR2>>8));
+  LoRa.print((char)PIR2);
   LoRa.endPacket();
   
   
