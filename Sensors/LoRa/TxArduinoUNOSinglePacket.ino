@@ -30,13 +30,13 @@ DallasTemperature sensors(&oneWire);
 
 // Number of TEMPERATURE sensors PREDEFINED
 const int numDS18B20 = 5;
-int T[numDS18B20];
-int humidity;
+short int T[numDS18B20];
+short int humidity;
 float MaxCount = 1200;
 int PIRread1 = 0;
 int PIRread2 = 0;
-int PIR1 = 0;
-int PIR2 = 0;
+short int PIR1 = 0;
+short int PIR2 = 0;
 
 // BRUTTO Addresses of DS18B20 sensors retrived with the Sensor_Identifier_DS18B20.ino program. This procedure can be AUTOMATIZED for a large scale production 
 DeviceAddress address_T1 = {0x28, 0x96, 0x25, 0x46, 0x5F, 0x20, 0x01, 0x65}; // T1=CLUSTER of bees
