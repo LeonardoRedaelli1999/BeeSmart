@@ -103,7 +103,7 @@ void loop() {
     Serial.println(LoRa.packetRssi());
 
     // A$+A11A... problema nel trovare i caratteri identificativi (si potrebbero cambiare in soli identificativi dell'arnia e.g. A11A11A11A11A11A11A11A11) e nel distinguerli dal numero che ci arriva (si potrebbero contare i bit siccome nota la distanza tra due misure contigue)
-    // https://lora-developers.semtech.com/documentation/tech-papers-and-guides/the-book/data-packet-transmissions/ ENCODING
+    // ENCODING https://lora-developers.semtech.com/documentation/tech-papers-and-guides/the-book/data-packet-transmissions/ 
 
     // PacketSize Check
     if (packetSize != 24) {
@@ -129,7 +129,7 @@ void loop() {
         return;
     }
 
-    for (int i = 1; i < num_sensors; i = i+3) {
+    for (int i = 1; i < packetsize; i = i+3) {
       dati=packet[i]<<8; // dati=[0000.0000][0000.0000] -> dati=[packet[i]][0000.0000]
       dati=dati+packet[i+1]; // dati=[packet[i]][packet[i+1]]
       ThingSpeak.setField(1+i/3, (float)(dati/100.0));
