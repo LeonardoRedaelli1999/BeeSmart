@@ -4,7 +4,7 @@ We measured the following parameters of the beehive:
 
 TEMPERATURE:
 T1=CLUSTER of bees
-T2=T2=LEFT or EST STOCKS
+T2=LEFT or EST STOCKS
 T3=RIGHT or OVEST STOCKS
 T4=CLUSTER of bees (safety)
 T5=OUTSIDE
